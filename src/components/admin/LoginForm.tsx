@@ -18,6 +18,9 @@ export function LoginForm() {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const formEmail = String(formData.get("email") ?? email);
+    const formPassword = String(formData.get("password") ?? password);
     setLoading(true);
     setMessage("");
 
@@ -28,8 +31,8 @@ export function LoginForm() {
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: formEmail,
+      password: formPassword,
     });
     setLoading(false);
     if (error) {
@@ -48,6 +51,7 @@ export function LoginForm() {
         </label>
         <Input
           type="email"
+          name="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="admin@example.com"
@@ -60,6 +64,7 @@ export function LoginForm() {
         </label>
         <Input
           type="password"
+          name="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           placeholder="请输入密码"
