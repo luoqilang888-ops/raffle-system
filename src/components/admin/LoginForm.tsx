@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
 import { createClient } from "@/lib/supabase/browser";
@@ -14,7 +14,13 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const canUseAuth = hasSupabasePublicEnv();
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -44,7 +50,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form method="post" onSubmit={onSubmit} className="space-y-4">
       <div>
         <label className="mb-1 block text-sm font-medium text-slate-700">
           管理员邮箱
@@ -77,8 +83,8 @@ export function LoginForm() {
         </p>
       )}
       {message && <p className="text-sm text-rose-600">{message}</p>}
-      <Button type="submit" disabled={loading} icon={<LogIn size={16} />}>
-        {loading ? "登录中" : "登录后台"}
+      <Button type="submit" disabled={!mounted || loading} icon={<LogIn size={16} />}>
+        {!mounted ? "准备中" : loading ? "登录中" : "登录后台"}
       </Button>
     </form>
   );
