@@ -12,7 +12,7 @@ type Ball = {
   color: string;
 };
 
-const colors = ["#f59e0b", "#fbbf24", "#d1d5db", "#fb923c", "#a3a3a3"];
+const colors = ["#d89137", "#f2bd61", "#aeb7c4", "#ec744c", "#6f7b8b"];
 
 export function LotteryMachine({
   phase,
@@ -106,7 +106,7 @@ function draw(
 
   const centerX = width / 2;
   const centerY = height / 2;
-  const radius = Math.min(width, height) * 0.39;
+  const radius = Math.min(width, height) * 0.37;
   const speed = phaseSpeed(phase, frame);
   const shake = phase === "spinning" || phase === "decelerating"
     ? Math.sin(frame * 0.4) * shakeStrength
@@ -114,16 +114,59 @@ function draw(
 
   context.save();
   context.translate(shake, 0);
-  context.fillStyle = "rgba(255,255,255,0.045)";
-  context.strokeStyle = "rgba(255,255,255,0.32)";
-  context.lineWidth = 3;
+  context.shadowBlur = 32;
+  context.shadowColor = "rgba(245,158,11,0.28)";
+  context.fillStyle = "rgba(255,255,255,0.055)";
+  context.strokeStyle = "rgba(255,255,255,0.42)";
+  context.lineWidth = 4;
   context.beginPath();
   context.arc(centerX, centerY, radius, 0, Math.PI * 2);
   context.fill();
   context.stroke();
+  context.shadowBlur = 0;
+
+  const glass = context.createLinearGradient(
+    centerX - radius,
+    centerY - radius,
+    centerX + radius,
+    centerY + radius,
+  );
+  glass.addColorStop(0, "rgba(255,255,255,0.56)");
+  glass.addColorStop(0.18, "rgba(255,255,255,0.04)");
+  glass.addColorStop(0.58, "rgba(255,255,255,0.02)");
+  glass.addColorStop(1, "rgba(255,255,255,0.22)");
+  context.strokeStyle = glass;
+  context.lineWidth = 10;
+  context.beginPath();
+  context.arc(centerX, centerY, radius - 6, Math.PI * 0.84, Math.PI * 1.72);
+  context.stroke();
 
   context.strokeStyle = "rgba(251,191,36,0.45)";
-  context.lineWidth = 8;
+  context.lineWidth = 2;
+  for (let i = 0; i < 3; i += 1) {
+    const offset = i * 16;
+    context.beginPath();
+    context.arc(
+      centerX,
+      centerY,
+      radius + 18 + offset,
+      Math.PI * (0.76 + i * 0.02),
+      Math.PI * (1.25 + i * 0.04),
+    );
+    context.stroke();
+    context.beginPath();
+    context.arc(
+      centerX,
+      centerY,
+      radius + 18 + offset,
+      Math.PI * (1.76 - i * 0.02),
+      Math.PI * (2.25 - i * 0.04),
+    );
+    context.stroke();
+  }
+
+  context.strokeStyle = "rgba(251,191,36,0.8)";
+  context.lineWidth = 7;
   context.beginPath();
   context.arc(centerX, centerY, radius + 7, Math.PI * 0.72, Math.PI * 0.28, true);
   context.stroke();
@@ -156,8 +199,8 @@ function draw(
     }
 
     if (speed > 1.7) {
-      context.strokeStyle = `${ball.color}55`;
-      context.lineWidth = ball.r * 0.7;
+      context.strokeStyle = `${ball.color}66`;
+      context.lineWidth = ball.r * 0.82;
       context.beginPath();
       context.moveTo(ball.x - ball.vx * 2.3, ball.y - ball.vy * 2.3);
       context.lineTo(ball.x, ball.y);
@@ -172,7 +215,7 @@ function draw(
       ball.y,
       ball.r,
     );
-    gradient.addColorStop(0, "#fff7ed");
+    gradient.addColorStop(0, "#fff9ec");
     gradient.addColorStop(0.25, ball.color);
     gradient.addColorStop(1, "#3f3f46");
     context.fillStyle = gradient;
@@ -181,9 +224,42 @@ function draw(
     context.fill();
   }
 
-  context.fillStyle = "rgba(15,23,42,0.4)";
-  context.fillRect(centerX - radius * 0.36, centerY + radius * 0.88, radius * 0.72, 28);
+  const baseY = centerY + radius * 0.88;
+  const baseWidth = radius * 1.48;
+  const base = context.createLinearGradient(0, baseY, 0, baseY + 72);
+  base.addColorStop(0, "#43454c");
+  base.addColorStop(0.32, "#141820");
+  base.addColorStop(1, "#07090d");
+  context.fillStyle = base;
+  roundRect(context, centerX - baseWidth / 2, baseY, baseWidth, 72, 28);
+  context.fill();
+
+  context.shadowBlur = 24;
+  context.shadowColor = "rgba(245,158,11,0.65)";
+  context.strokeStyle = "rgba(251,191,36,0.9)";
+  context.lineWidth = 5;
+  context.beginPath();
+  context.ellipse(centerX, baseY + 8, baseWidth * 0.45, 15, 0, 0, Math.PI * 2);
+  context.stroke();
+  context.shadowBlur = 0;
   context.restore();
+}
+
+function roundRect(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.arcTo(x + width, y, x + width, y + height, radius);
+  context.arcTo(x + width, y + height, x, y + height, radius);
+  context.arcTo(x, y + height, x, y, radius);
+  context.arcTo(x, y, x + width, y, radius);
+  context.closePath();
 }
 
 function phaseSpeed(phase: RuntimePhase, frame: number) {

@@ -101,7 +101,7 @@ export function ControlPanel({
       </div>
 
       <Card>
-        <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
           <div className="space-y-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
@@ -131,8 +131,9 @@ export function ControlPanel({
               </Select>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="grid gap-3 md:grid-cols-5">
               <Button
+                className="h-24 flex-col rounded-lg bg-blue-600 text-base shadow-[0_14px_30px_rgba(37,99,235,0.24)] hover:bg-blue-700"
                 onClick={() => runAction("start")}
                 disabled={Boolean(busy) || !currentPrize}
                 icon={<Zap size={16} />}
@@ -140,7 +141,7 @@ export function ControlPanel({
                 开始抽奖
               </Button>
               <Button
-                variant="secondary"
+                className="h-24 flex-col rounded-lg bg-red-500 text-base text-white shadow-[0_14px_30px_rgba(239,68,68,0.22)] hover:bg-red-600"
                 onClick={() => runAction("stop")}
                 disabled={Boolean(busy)}
                 icon={<Square size={16} />}
@@ -149,6 +150,7 @@ export function ControlPanel({
               </Button>
               <Button
                 variant="secondary"
+                className="h-24 flex-col rounded-lg bg-white text-slate-700"
                 onClick={() => patchRuntime({ phase: "idle" })}
                 disabled={Boolean(busy)}
                 icon={<RotateCcw size={16} />}
@@ -156,11 +158,22 @@ export function ControlPanel({
                 返回等待页面
               </Button>
               <Button
-                variant="danger"
-                onClick={() => patchRuntime({ phase: "emergency" })}
+                variant="secondary"
+                className="h-24 flex-col rounded-lg bg-white text-slate-700"
+                onClick={copyDisplayUrl}
                 disabled={Boolean(busy)}
+                icon={<Copy size={16} />}
               >
-                紧急停止动画
+                复制链接
+              </Button>
+              <Button
+                variant="secondary"
+                className="h-24 flex-col rounded-lg bg-white text-slate-700"
+                onClick={() => window.open(displayUrl, "_blank")}
+                disabled={Boolean(busy)}
+                icon={<ExternalLink size={16} />}
+              >
+                打开大屏
               </Button>
             </div>
             {message && <p className="text-sm text-blue-700">{message}</p>}
@@ -193,6 +206,14 @@ export function ControlPanel({
                 重生成令牌
               </Button>
             </div>
+            <Button
+              variant="danger"
+              className="mt-3 w-full"
+              onClick={() => patchRuntime({ phase: "emergency" })}
+              disabled={Boolean(busy)}
+            >
+              紧急停止动画
+            </Button>
             <p className="mt-3 text-xs text-slate-500">
               最后心跳：{formatDateTime(summary.lastHeartbeatAt)}
             </p>
@@ -215,7 +236,7 @@ function Stat({
   return (
     <Card className="p-4">
       <p className="text-xs font-medium text-slate-500">{label}</p>
-      <p className="mt-2 text-xl font-semibold text-slate-950">{value}</p>
+      <p className="mt-2 text-2xl font-black text-blue-600">{value}</p>
       {typeof active === "boolean" && (
         <p className={active ? "mt-1 text-xs text-emerald-600" : "mt-1 text-xs text-slate-500"}>
           {active ? "连接正常" : "等待大屏心跳"}
