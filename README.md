@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 会场分组抽奖系统
 
-## Getting Started
+一个可长期维护的 Next.js + Supabase 会场分组抽奖系统。
 
-First, run the development server:
+## 功能
+
+- 大屏展示：`/display/[eventSlug]/[displayToken]`
+- 管理后台：`/admin/[eventSlug]`
+- Supabase Auth 邮箱密码登录
+- Supabase PostgreSQL 持久化数据
+- Supabase Realtime 同步大屏状态
+- Supabase Storage 上传紧张音乐和揭晓音效
+- 服务端抽奖 API，前端不生成最终结果
+- Canvas 摇奖球动画，球上不显示姓名或组别
+- Excel 导入导出参与名单
+- 自定义奖项名称、次数和每次抽取组数
+- 开奖记录永久保存并支持撤销
+
+## 本地运行
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+如果没有配置 Supabase 环境变量，系统会进入本地演示模式，可访问：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 后台：`http://localhost:3000/admin/demo-event`
+- 大屏：`http://localhost:3000/display/demo-event/demo-display-token`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 常用命令
 
-## Learn More
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run test:e2e
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 生产部署
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+详见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
